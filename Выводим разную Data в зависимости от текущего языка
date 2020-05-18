@@ -1,0 +1,46 @@
+Выводим разную Data в зависимости от текущего языка (пример)
+
+<p>{{ product.name }}: {{ $n(product.price, "currency") }}</p>
+
+
+
+<script>
+  const products = {  //это мы импортируем
+    "en-GB": {
+      name: "Red Jeans",
+      stock: 4,
+      price: 89
+    },
+    "en-US": {
+      name: "Red Jeans",
+      stock: 2,
+      price: 109
+    },
+    "es-ES": {
+      name: "Vaqueros Rojos",
+      stock: 9,
+      price: 99
+    }
+  }
+
+  export default {
+    computed: {
+      product() {
+        return products[this.$i18n.locale];
+      }
+    }
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+

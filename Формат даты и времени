@@ -1,0 +1,80 @@
+Format Dates and Time
+
+1. В значениях, присуждаемых для ..., надо обозначать и РАЗНОВИДНОСТЬ "ISO language table codes":
+VUE_APP_I18N_LOCALE='en-GB'
+VUE_APP_I18N_FALLBACK_LOCALE=ru
+this.$i18n.locale = 'en-US'
+
+Если написать просто en, то это по-умолчанию будет 'en-US'.
+
+
+
+2. Прописываем в i18n.js желаемые форматы по каждому языку
+
+const setDateTimeFormats = {
+  short: {
+    year: "numeric",    //2-digit, numeric
+    month: "2-digit",   //2-digit, numeric, narrow, short, long
+    day: "2-digit"      //2-digit, numeric, narrow, short, long
+  },
+  long: {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "long",
+    hour: "numeric",
+    minute: "numeric"
+  }
+}
+
+const dateTimeFormats = {
+  en: setDateTimeFormats,    // по умолчанию это будет 'en-US'
+  "en-GB": setDateTimeFormats,
+  de: setDateTimeFormats
+}
+
+export default new VueI18n({
+  locale: process.env.VUE_APP_I18N_LOCALE || 'ru',
+  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'ru',
+  messages: loadLocaleMessages(),  //запрашиваются файлы из src/locales/en.json and returns the messages for each locale.
+  dateTimeFormats   //<<==
+})
+
+
+
+
+
+3. HTML
+    <p> = {{ $d(new Date(), "short") }}</p> 
+<!-- получим текущую дату языка, обозначенного в VUE_APP_I18N_LOCALE, 
+в "short"-форме, которую описали в i18n.js -->
+
+<!-- такая запись зависит от значения VUE_APP_I18N_LOCALE=en и
+    БУДЕТ реагировать на смену значения this.$i18n.locale-->
+
+
+    <p> = {{ $d(new Date(), "short", 'en-GB') }}</p>
+<!-- такая запись НЕ будет реагировать на смену значения this.$i18n.locale-->
+
+
+
+
+
+5. Если мы обрабатываем дату, то при загрузке сайта надо не обрезать разновидность языка.
+
+//App.vue
+
+  created() {
+    const locale = localStorage.getItem("locale")  //запрашиваем ранее принудительно выбранный пользователем язык, который мы сохранили в localStorage.
+
+    if (locale) {
+      this.$i18n.locale = locale
+    } else if (navigator.language) {
+
+      // this.$i18n.locale = navigator.language.substring(0, 2)
+
+      this.$i18n.locale = navigator.language  //если написать так, то будет присуждаться значение, которое указывает и на разновидность языка- "en-GB" или "en-US". Это значимо при обработке даты.
+
+    }
+  }
+

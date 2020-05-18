@@ -1,0 +1,25 @@
+Константы в значениях перевода
+
+- добавление в перевод значений, которые будут ВО ВСЕХ языках ОДИНАКОВЫМИ.
+
+
+<p>{{ $t("hello", { name: 'Kola' }) }}</p>   ==>> hello_en Peter
+<p>{{ $t("hello", { name_2 }) }}</p>
+
+
+data() {
+  return {
+    name_2: "Peter"
+  };
+}
+
+
+//en.json
+{
+  "hello": "hello_en {name}"
+}
+
+//de.json
+{
+  "hello": "hello_de {name}"
+}

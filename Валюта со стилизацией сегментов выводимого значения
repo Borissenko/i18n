@@ -1,0 +1,42 @@
+Валюта со стилизацией сегментов выводимого значения
+
+- стили для разных частей величины цены.
+
+Оно основано на Intl.Number.formatToParts()
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/formatToParts
+
+$4,500.45
+
+      <i18n-n :value="4500.45" format="currency">
+        <template v-slot:currency="slotProps">
+<!-- знак валюты-->
+          <span style="color: red; font-size: 25px; font-weight: bold">{{slotProps.currency}}</span>
+        </template>
+
+        <template v-slot:integer="slotProps">
+<!-- целая часть числа-->
+          <span style="color:red; font-size:66px">{{ slotProps.integer }}</span>
+        </template>
+
+        <template v-slot:decimal="slotProps">
+<!-- точка(запятая) между целой и дробной частями числа-->
+          <span style="color:blue;  font-size:55px">{{ slotProps.decimal }}</span>
+        </template>
+
+        <template v-slot:fraction="slotProps">
+<!-- дробная часть числа-->
+          <span style="color:#eebc09; font-size:44px">{{ slotProps.fraction }}</span>
+        </template>
+        <template v-slot:group="slotProps">
+<!-- запятая между сотнями в целой части числа-->
+          <span style="color:#16a106; font-size:55px">{{ slotProps.group }}</span>
+        </template>
+        <template v-slot:literal="slotProps">
+<!-- расстояние между числом и символом валюты-->
+          <span style=" letter-spacing: 10px">{{ slotProps.literal }}</span>
+        </template>
+      </i18n-n>
+
+
+
+

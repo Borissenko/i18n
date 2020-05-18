@@ -1,0 +1,72 @@
+ВАЛЮТА
+
+1. Заявляем формат используемых валют
+
+//i18n.js
+
+const numberFormats = {
+  "en-GB": {
+    currency: {
+      style: "currency",
+      currency: "GBP",
+      currencyDisplay: 'symbol'
+    }
+  },
+  "en-US": {
+    currency: {
+      style: "currency",       //plain numbers or percentage numbers
+      currency: "USD",         //USD, EUR, GBP, RUB
+      currencyDisplay: 'name'  //symbol, code, name
+    }
+  },
+  "de": {
+    currency: {
+      style: "currency",
+      currency: "EUR"
+    }
+  }
+}
+
+
+export default new VueI18n({
+  locale: process.env.VUE_APP_I18N_LOCALE || 'ru',
+  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'ru',
+  messages: loadLocaleMessages(),  //запрашиваются файлы из src/locales/en.json and returns the messages for each locale.
+  dateTimeFormats,
+  numberFormats   //<<==
+})
+
+
+
+
+2. Используем
+
+а)
+<p>{{ $n(100, "currency") }}</p>
+<p>{{ $n(value, "currency") }}</p>
+
+б)
+<i18n-n :value="100" format="currency"></i18n-n>
+
+в)
+см. "Валюта со стилизацией сегментов выводимого значения"
+
+
+data() {
+  return {
+    value: 100
+  };
+}
+
+Компонент <i18n-n> регистрировать не нужно, он из коробки.
+
+
+
+
+
+
+
+
+
+
+

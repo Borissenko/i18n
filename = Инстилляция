@@ -1,0 +1,213 @@
+Tutorial
+http://kazupon.github.io/vue-i18n/
+
+Интернационализация также есть и в чистом JS:
+https://learn.javascript.ru/intl
+Intl.Collator
+Intl.DateTimeFormat
+Intl.NumberFormat
+
+
+
+ИНСТИЛЛЯЦИЯ
+
+а)
+npm install vue-i18n
+
+//main.js
+import Vue from 'vue'
+import VueI18n from 'vue-i18n'
+
+Vue.use(VueI18n)
+
+
+б) или можно установить в проект Vue-CLI командой установки плагинов
+vue add i18n
+Будут автоматически добавлены
+- .env
+- vue.config.js с нашими расширенными настройками i18n
+- src/i18n.js
+- src/locales/en.json
+- без src/components/HelloI18n.vue
+
+
+в) или через броузерный интерфейс Vue-CLI создаем проект, а далее добавляем необходимые плагины
+vue ui
+- наиболее чистая установка пакетов, БЕЗ ворнингов(что есть у предыдущих способах).
+- тоже можем сходу добавить расширенные настройки для "Vue.use(VueI18n)".
+галочку "Enable lоcale SFC" - ставим(!).
+
+
+=>>>>>>>>>>>>>
+#A.
+Появиться в левом меню раздел "Localizations".
+
+
+#B.
+В проекте добавится:
+
+1).env
+VUE_APP_I18N_LOCALE=es           //локализация броузера, т.е. на какой язык переводить при загрузке сайта.(1)
+VUE_APP_I18N_FALLBACK_LOCALE=en  //на какой язык переводить, если искомое слово не прописано в "es".(2)
+
+
+2)vue.config.js -расширенные настройки для плагина i18n
+module.exports = {
+  pluginOptions: {
+    i18n: {
+      locale: 'ru',
+      fallbackLocale: 'ru',
+      localeDir: 'locales',
+      enableInSFC: true
+    }
+  }
+}
+
+3)src/i18n.js
+- см. i18n_example.js
+
+
+4)src/locales/en.json
+{
+  "message": "hallo",
+  "hello": "hello de.json  {name}",
+  "person": " {n} 00 | {n} 01 | {n} 02 | {n} 03"
+}
+
+
+5)src/components/HelloI18n.vue
+- example компонент
+
+
+
+#C. 
+НАСТРОЙКИ locale.
+
+- locale и fallbackLocale прописаны в 3(!) местах:
+
+1).env            - второй.  Перебивает территориальную лок-ю броузера.
+2)vue.config.js   - средний
+3)src/i18n.js     - первый
+
+
+
+
+
+
+#D.
+HOW US IT
+
+<p>{{ $t('hello') }}</p>
+<p>{{ $t('message') }}</p>
+<p>{{ $t("fruit.green.kiwi") }}</p>
+
+
+А поступать это может из 2 мест:
+
+a) //component.vue
+<i18n>
+{
+  "en": {
+    "hello": "Hello-en"
+  },
+  "es":{
+    "hello": "Hello-es",
+    "fruit": {
+      "green": {
+        "kiwi": "kiwi-es"
+      }
+    }
+  }
+}
+</i18n>
+
+Это автоматически переключиться by ТЕРРИТОРИАЛЬНОЙ ЛОКАЛИЗАЦИЕЙ БРОУЗЕРА (!).
+Но территорию можно перебить, изменив язык в .env на "es".
+
+
+
+b) //src/locales/en.json
+{
+  "hello": "Привет!"   //если слова нет ни в "es", ни в "en", оно берется из en(!).json-файла.(3)
+}
+
+
+
+methods: {
+  setLocale(locale) {
+    this.$i18n.locale = locale
+    localStorage.setItem("locale", locale)
+  }
+}
+
+Т.О.
+Сначало ищется в <i18n>, затем в .json.
+
+ИТОГО======
+
+А =Когда сектор <i18n> прописан:
+1. this.$i18n.locale - переключает ....VUE_APP_I18N_LOCALE=de в .env ...(?)
+и работает ТОЛЬКО в рамках <i18n>, не охватывая src/locales/en.json (!), даже, если там значение прописано!
+
+2. Если переключим на язык-слово, которого нет в <i18n>, то проявиться locale-язык, прописанный в .env, а значение слова возьметься из его .json (даже если есть аналогичная пропись по locale-языку в <i18n>).
+а если слова в его .json нет, то проявиться FALLBACK_LOCALE-язык, прописанный в .env, а значение слова возьметься из FALLBACK_LOCALE-язык.json.
+
+
+Б =Когда сектора <i18n> вообще нет:
+1. При загрузке страницы this.$i18n.locale будет равен VUE_APP_I18N_LOCALE в .env
+
+2. Если мы изменим значение у this.$i18n.locale, то будет обращаться к соответствующему языку .json
+
+3. Если мы изменим значение у this.$i18n.locale, а в соответствущем .json слова нет, 
+то слово будет искаться в .json ~VUE_APP_I18N_FALLBACK_LOCALE, (не в ~VUE_APP_I18N_LOCALE, даже, если там валиант слова есть).
+
+
+
+
+
+
+#E.
+ТЕРРИТОРИАЛЬНАЯ ЛОКАЛИЗАЦИЯ БРОУЗЕРА
+
+navigator.languages     //это  ["en-US", "en", "ru"]
+
+navigator.language                  //это строка из navigator.languages[0]
+navigator.language.substring(0, 2)  //т.к. бывает "en-US", "en-GB"
+
+
+
+
+
+
+#F.
+Выбор языка ПРИ ЗАГРУЗКЕ САЙТА в зависимости от значения navigator.language броузера.
+
+//App.vue
+
+  created() {
+    const locale = localStorage.getItem("locale")  //запрашиваем ранее принудительно выбранный пользователем язык, который мы сохранили в localStorage.
+
+    if (locale) {
+      this.$i18n.locale = locale
+    } else if (navigator.language) {
+      this.$i18n.locale = navigator.language.substring(0, 2)
+
+      // this.$i18n.locale = navigator.language  //если написать так, то будет присуждаться значение, которое указывает и на разновидность языка- "en-GB" или "en-US". Это значимо при обработке даты.
+
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
