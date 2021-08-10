@@ -71,10 +71,8 @@ export default new VueI18n({
       this.$i18n.locale = locale
     } else if (navigator.language) {
 
-      // this.$i18n.locale = navigator.language.substring(0, 2)
-
-      this.$i18n.locale = navigator.language  //если написать так, то будет присуждаться значение, которое указывает и на разновидность языка- "en-GB" или "en-US". Это значимо при обработке даты.
-
+    // this.$i18n.locale = navigator.language.substring(0, 2)
+    this.$i18n.locale = navigator.language  //если написать так, то будет присуждаться значение, которое указывает и на разновидность языка- "en-GB" или "en-US". Это значимо при обработке даты.
     }
   }
 
