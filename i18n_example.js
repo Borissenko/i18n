@@ -39,7 +39,6 @@ const setDateTimeFormats = {   //дата
       hour: "numeric",
       minute: "numeric"
     }
-  }
 }
 
 const dateTimeFormats = {
