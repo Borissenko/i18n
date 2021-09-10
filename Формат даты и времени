@@ -1,5 +1,12 @@
 Format Dates and Time
 
+
+01. Броузерный метод toLocaleString()
+- toLocaleString() возвращает строку с языкозависимым представлением даты.
+this.product.price.toLocaleString(this.$i18n.locale)
+
+
+
 1. В значениях, присуждаемых для ..., надо обозначать и РАЗНОВИДНОСТЬ "ISO language table codes":
 VUE_APP_I18N_LOCALE='en-GB'
 VUE_APP_I18N_FALLBACK_LOCALE=ru
