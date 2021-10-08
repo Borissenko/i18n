@@ -14,6 +14,15 @@ await this.$i18n.locale = 'ru'       //vue
 await this.$i18n.setLocale('ru')     //nuxt
 
 
+//onLanguageSwitched-hook
+// onLanguageSwitched called right after a new locale has been set
+app.i18n.onLanguageSwitched = (oldLocale, newLocale) => {
+  // if (app.store) {
+  //   app.store.commit('tech/setLangSwitched', true);
+  // }
+}
+
+
 
 // ТЕРРИТОРИАЛЬНАЯ локализация БРОУЗЕРА
 navigator.languages                  //
